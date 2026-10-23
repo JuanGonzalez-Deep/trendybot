@@ -1,0 +1,36 @@
+name: Vigilar Trendy
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # cada 10 minutos
+  workflow_dispatch:          # permite correrlo a mano para probar
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  vigilar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests
+
+      - id: bot
+        run: python trendy_bot.py --once
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_IDS: ${{ secrets.CHAT_IDS }}
+          TRENDY_URL: ${{ secrets.TRENDY_URL }}
+
+      # Cuando detecta el calendario, se desactiva solo para no repetir el aviso
+      - if: steps.bot.outputs.found == 'true'
+        run: gh workflow disable "Vigilar Trendy"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
