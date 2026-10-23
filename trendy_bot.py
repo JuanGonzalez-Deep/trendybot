@@ -1,17 +1,9 @@
-"""
-Bot de Trendy para GitHub Actions.
-Cada ejecución revisa la página UNA vez. Si ya salió el calendario de
-adviento, avisa por Telegram y le dice a GitHub que se desactive solo.
-
-Los datos secretos NO van en el código: se leen de variables de entorno
-(los "Secrets" del repositorio en GitHub).
-"""
 import os
 import sys
 import requests
 
 BOT_TOKEN = os.environ.get("8672935024:AAGjgpWr3Hzr0wdOaANMFreWFFVauAX4Sdw")
-CHAT_IDS = [c.strip() for c in os.environ.get("6989441799", "8800326037").split(",") if c.strip()]
+CHAT_IDS = [c.strip() for c in os.environ.get("6989441799","8800326037").split(",") if c.strip()]
 URL = os.environ.get("https://www.maquillajetrendyshop.com/")
 
 # Palabras que indican que ya salió (en minúsculas)
@@ -45,10 +37,16 @@ def ya_salio():
 
 
 def main():
-           faltan = [n for n, v in (("BOT_TOKEN", BOT_TOKEN), ("CHAT_IDS", CHAT_IDS), ("TRENDY_URL", URL)) if not v]
-       if faltan:
-           print("Faltan:", ", ".join(faltan))
-           sys.exit(1)
+    faltan = []
+    if not BOT_TOKEN:
+        faltan.append("BOT_TOKEN")
+    if not CHAT_IDS:
+        faltan.append("CHAT_IDS")
+    if not URL:
+        faltan.append("TRENDY_URL")
+    if faltan:
+        print("Faltan:", ", ".join(faltan))
+        sys.exit(1)
 
     if "--test" in sys.argv:
         enviar_telegram("Prueba del bot de Trendy desde GitHub ✅")
@@ -60,7 +58,6 @@ def main():
             "Corre a verlo antes de que se agote:\n" + URL
         )
         print("¡Detectado! Aviso enviado.")
-        # Le avisa al workflow para que se desactive y no repita el mensaje
         salida = os.environ.get("GITHUB_OUTPUT")
         if salida:
             with open(salida, "a") as f:
