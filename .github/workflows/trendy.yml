@@ -21,12 +21,20 @@ jobs:
 
       - run: pip install requests
 
+      - name: Diagnostico
+        run: |
+          echo "BOT_TOKEN: ${#BOT_TOKEN} caracteres"
+          echo "CHAT_IDS: ${#CHAT_IDS} caracteres"
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_IDS: ${{ secrets.CHAT_IDS }}
+
       - id: bot
         run: python trendy_bot.py --once
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_IDS: ${{ secrets.CHAT_IDS }}
-          TRENDY_URL: ${{ secrets.TRENDY_URL }}
+          TRENDY_URL: "https://www.maquillajetrendyshop.com/"
 
       - if: steps.bot.outputs.found == 'true'
         run: gh workflow disable "Vigilar Trendy"
