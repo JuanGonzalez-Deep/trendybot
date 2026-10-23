@@ -9,7 +9,7 @@ SITIO = "https://www.maquillajetrendyshop.com/"
 API = SITIO + "api/catalog_system/pub/products/search?ft="
 
 # Palabras que se buscan en los productos de la tienda
-BUSQUEDAS = ["adviento","sombra"]
+BUSQUEDAS = ["adviento","calendario"]
 
 HEADERS = {
     "User-Agent": (
