@@ -2,8 +2,8 @@ name: Vigilar Trendy
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # cada 10 minutos
-  workflow_dispatch:          # permite correrlo a mano para probar
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
 
 permissions:
   actions: write
@@ -28,7 +28,6 @@ jobs:
           CHAT_IDS: ${{ secrets.CHAT_IDS }}
           TRENDY_URL: ${{ secrets.TRENDY_URL }}
 
-      # Cuando detecta el calendario, se desactiva solo para no repetir el aviso
       - if: steps.bot.outputs.found == 'true'
         run: gh workflow disable "Vigilar Trendy"
         env:
