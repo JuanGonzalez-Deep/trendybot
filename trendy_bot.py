@@ -45,9 +45,10 @@ def ya_salio():
 
 
 def main():
-    if not (BOT_TOKEN and CHAT_IDS and URL):
-        print("Faltan secretos: BOT_TOKEN, CHAT_IDS o TRENDY_URL")
-        sys.exit(1)
+           faltan = [n for n, v in (("BOT_TOKEN", BOT_TOKEN), ("CHAT_IDS", CHAT_IDS), ("TRENDY_URL", URL)) if not v]
+       if faltan:
+           print("Faltan:", ", ".join(faltan))
+           sys.exit(1)
 
     if "--test" in sys.argv:
         enviar_telegram("Prueba del bot de Trendy desde GitHub ✅")
