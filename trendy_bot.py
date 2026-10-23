@@ -4,10 +4,12 @@ import requests
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHAT_IDS = [c.strip() for c in os.environ.get("CHAT_IDS", "").split(",") if c.strip()]
-URL = os.environ.get("TRENDY_URL", "")
 
-# Palabras que indican que ya salió (en minúsculas)
-KEYWORDS = ["adviento", "advent"]
+SITIO = "https://www.maquillajetrendyshop.com/"
+API = SITIO + "api/catalog_system/pub/products/search?ft="
+
+# Palabras que se buscan en los productos de la tienda
+BUSQUEDAS = ["adviento"]
 
 HEADERS = {
     "User-Agent": (
@@ -30,10 +32,14 @@ def enviar_telegram(texto):
 
 
 def ya_salio():
-    r = requests.get(URL, headers=HEADERS, timeout=30)
-    r.raise_for_status()
-    html = r.text.lower()
-    return any(k in html for k in KEYWORDS)
+    for termino in BUSQUEDAS:
+        r = requests.get(API + termino, headers=HEADERS, timeout=30)
+        r.raise_for_status()
+        productos = r.json()
+        print(f"Búsqueda '{termino}': {len(productos)} productos")
+        if len(productos) > 0:
+            return True
+    return False
 
 
 def main():
@@ -42,8 +48,6 @@ def main():
         faltan.append("BOT_TOKEN")
     if not CHAT_IDS:
         faltan.append("CHAT_IDS")
-    if not URL:
-        faltan.append("TRENDY_URL")
     if faltan:
         print("Faltan:", ", ".join(faltan))
         sys.exit(1)
@@ -55,7 +59,8 @@ def main():
     if ya_salio():
         enviar_telegram(
             "💄✨ ¡Ya salió el calendario de adviento de Trendy! "
-            "Corre a verlo antes de que se agote:\n" + URL
+            "Corre a verlo antes de que se agote:\n"
+            + SITIO + "adviento?_q=adviento&map=ft"
         )
         print("¡Detectado! Aviso enviado.")
         salida = os.environ.get("GITHUB_OUTPUT")
