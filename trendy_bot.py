@@ -2,9 +2,9 @@ import os
 import sys
 import requests
 
-BOT_TOKEN = os.environ.get("8672935024:AAGjgpWr3Hzr0wdOaANMFreWFFVauAX4Sdw")
-CHAT_IDS = [c.strip() for c in os.environ.get("6989441799","8800326037").split(",") if c.strip()]
-URL = os.environ.get("https://www.maquillajetrendyshop.com/")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
+CHAT_IDS = [c.strip() for c in os.environ.get("CHAT_IDS", "").split(",") if c.strip()]
+URL = os.environ.get("TRENDY_URL", "")
 
 # Palabras que indican que ya salió (en minúsculas)
 KEYWORDS = ["adviento", "advent"]
